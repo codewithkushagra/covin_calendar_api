@@ -49,12 +49,15 @@ class GoogleCalendarRedirectView(APIView):
             user = asyncio.ensure_future(get_refresh_token_async(access_token))
             user_details = await asyncio.gather(user)
 
-            if user_details is not None:
-                
+            try:
+                refresh_token = user_details[0].refresh_token
+            except:
                 flag = False
 
+            if flag:
+                
                 # extract refresh token from GoogleTokens model
-                refresh_token = user_details[0].refresh_token
+                
 
                 # if we get a valid token then make a http request for refreshing the access token
                 if refresh_token:
