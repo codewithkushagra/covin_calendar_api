@@ -49,7 +49,7 @@ class GoogleCalendarRedirectView(APIView):
             user = asyncio.ensure_future(get_refresh_token_async(access_token))
             user_details = await asyncio.gather(user)
 
-            if user_details is not None:
+            if len(user_details) > 0:
                 
                 flag = False
 
