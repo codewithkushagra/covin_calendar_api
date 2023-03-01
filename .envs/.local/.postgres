@@ -1,0 +1,7 @@
+# PostgreSQL
+# ------------------------------------------------------------------------------
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=calender_api
+POSTGRES_USER=aaMcxawUzblzulpJTExCDtfpdrmBoFxq
+POSTGRES_PASSWORD=xPigonFqjOJB2m65SoOd1v3UEWObTUdsE7I6CaWklYCP1hu2XLfIrpmwNaWQkkDm
