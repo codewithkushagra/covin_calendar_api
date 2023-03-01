@@ -73,6 +73,10 @@ EMAIL_SUBJECT_PREFIX = env(
     default="[calender_api]",
 )
 
+CLIENT_ID = env("CLIENT_ID")
+
+CLIENT_SECRET = env("CLIENT_SECRET")
+
 # ADMIN
 # ------------------------------------------------------------------------------
 # Django Admin URL regex.
