@@ -6,5 +6,5 @@ app_name = 'events'
 
 urlpatterns = [
     path('init/', init_view, name='init'),
-    path('redirect', redirect_view, name='redirect'),
+    path('redirect/', redirect_view, name='redirect'),
 ]

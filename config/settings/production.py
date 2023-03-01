@@ -73,9 +73,9 @@ EMAIL_SUBJECT_PREFIX = env(
     default="[calender_api]",
 )
 
-CLIENT_ID = env("CLIENT_ID")
+CLIENT_ID = env("CLIENT_ID", default="112358493438-1uoiubbucl2j4m27pkiqsqg8ee5tqsnv.apps.googleusercontent.com")
 
-CLIENT_SECRET = env("CLIENT_SECRET")
+CLIENT_SECRET = env("CLIENT_SECRET", default="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")
 
 # ADMIN
 # ------------------------------------------------------------------------------
