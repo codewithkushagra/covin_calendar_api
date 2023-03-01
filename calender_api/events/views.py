@@ -41,8 +41,6 @@ class GoogleCalendarRedirectView(APIView):
         # check if cookie is stored in users browser for access token        
         access_token = request.COOKIES.get('access_token', None)
 
-        flag = True
-
         # if it is stored
         if access_token is not None:
             # get refresh all the token data from database
@@ -52,9 +50,7 @@ class GoogleCalendarRedirectView(APIView):
             tokens = user_details[0]
            
             if tokens is not None:
-            
                 # extract refresh token from GoogleTokens mode
-
                 # if we get a valid token then make a http request for refreshing the access token
                 if refresh_token:
                     async with aiohttp.ClientSession() as session:
@@ -93,8 +89,50 @@ class GoogleCalendarRedirectView(APIView):
                 # user cookies is invalid
                 else:
                     return Response({'message': 'Invalid user'})
+            else:
+                authorization_code = request.GET.get('code')
+                # if authorization_code in invalid promopt user
+                if not authorization_code:
+                    return Response({'message':'No authorization code provided'})
+                
+                async with aiohttp.ClientSession() as session:
+                    # Exchange the authorization code for an access token and refresh token
+                    async with session.post(GOOGLE_TOKEN_ENDPOINT, data={
+                        'code': authorization_code,
+                        'client_id': CLIENT_ID,
+                        'client_secret': CLIENT_SECRET,
+                        'redirect_uri': REDIRECT_URI,
+                        'grant_type': 'authorization_code'
+                    }) as response:
+
+                        response_data = await response.json()
+
+                        if 'error' in response_data:
+                            # return redirect(reverse('events:init'))
+                            return Response(response_data)
+
+                        access_token = response_data.get('access_token', 'None') 
+                        refresh_token = response_data.get('refresh_token', 'None')
+
+                        async with session.get(GOOGLE_USERINFO_ENDPOINT, headers={
+                            'Authorization': f'Bearer {access_token}'
+                        }) as userinfo_response:
+                            userinfo_data = await userinfo_response.json()
+                            email = userinfo_data.get('email','None')
+                            ip = get_client_ip(request)
+                            t = asyncio.ensure_future(save_tokens_async(access_token, refresh_token, email, ip))
+                            await asyncio.gather(t)
+                            # Use the access token to retrieve the user's calendar events
+                            async with session.get(GOOGLE_CALENDAR_ENDPOINT, headers={
+                                'Authorization': f'Bearer {access_token}'
+                            }) as calendar_response:
+                                calendar_data = await calendar_response.json()
+                                response = Response(calendar_data)
+                                response.set_cookie(key='access_token', value=access_token, httponly=True, secure=True)
+                                # Return the calendar events as a JSON response
+                                return response
         # if token is not set in cookies
-        elif flag:
+        else:
             # Get the authorization code from the query parameters
             authorization_code = request.GET.get('code')
 
