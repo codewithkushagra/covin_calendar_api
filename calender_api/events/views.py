@@ -11,7 +11,6 @@ from calender_api.constants.constants import *
 from .utils import *
 
 
-
 class GoogleCalendarInitView(APIView):
     """
     This view creates oauth url and redirects user to same
