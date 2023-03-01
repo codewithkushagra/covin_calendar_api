@@ -4,10 +4,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from django.views.generic import TemplateView
 
 
 urlpatterns = [
-    path(settings.ADMIN_URL, admin.site.urls)
+    path(settings.ADMIN_URL, admin.site.urls),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
