@@ -15,7 +15,8 @@ def get_client_ip(request):
 # get refresh token from database
 def get_refresh_token(access_token):
     try:
-        return GoogleTokens.objects.get(access_token = access_token)
+        google = GoogleTokens.objects.get(access_token = access_token)
+        return google
     except:
         return None
 
