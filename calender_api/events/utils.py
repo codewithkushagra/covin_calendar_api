@@ -15,8 +15,9 @@ def get_client_ip(request):
 # get refresh token from database
 def get_refresh_token(access_token):
     google = GoogleTokens.objects.filter(access_token = access_token)
-    return google
-
+    if google:
+        return google
+    return None
 
 
 # async warpper for get_refresh_token function
