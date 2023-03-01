@@ -51,7 +51,7 @@ class GoogleCalendarRedirectView(APIView):
 
             tokens = user_details[0]
            
-            if tokens:
+            if tokens is not None:
             
                 # extract refresh token from GoogleTokens mode
 
