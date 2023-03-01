@@ -39,18 +39,20 @@ class GoogleCalendarRedirectView(APIView):
     async def get(self, request):
         
         # check if cookie is stored in users browser for access token        
-        access_token = request.COOKIES.get('access_token', None)
+        email = request.COOKIES.get('email', None)
 
         # if it is stored
-        if access_token is not None:
+        if email is not None:
             # get refresh all the token data from database
-            user = asyncio.ensure_future(get_refresh_token_async(access_token))
+            user = asyncio.ensure_future(get_refresh_token_async(email))
             user_details = await asyncio.gather(user)
-
-            tokens = user_details[0]
-           
+            tokens = user_details[0][0]
+            print("================================================================")
+            print(tokens.refresh_token)
+            print("================================================================")
             if tokens is not None:
                 # extract refresh token from GoogleTokens mode
+                refresh_token = tokens.refresh_token
                 # if we get a valid token then make a http request for refreshing the access token
                 if refresh_token:
                     async with aiohttp.ClientSession() as session:
@@ -81,9 +83,9 @@ class GoogleCalendarRedirectView(APIView):
                                     calendar_data = await calendar_response.json()
                                     response = Response(calendar_data)
                                     t = asyncio.ensure_future(save_tokens_async(access_token, refresh_token,\
-                                        user_details[0].email, user_details[0].email))
+                                        tokens.email, tokens.ip))
                                     await asyncio.gather(t)
-                                    response.set_cookie(key='access_token', value=access_token, httponly=True, secure=True)
+                                    response.set_cookie(key='email', value=tokens.email, httponly=True, secure=True)
                                     # Return the calendar events as a JSON response
                                     return response
                 # user cookies is invalid
@@ -128,7 +130,7 @@ class GoogleCalendarRedirectView(APIView):
                             }) as calendar_response:
                                 calendar_data = await calendar_response.json()
                                 response = Response(calendar_data)
-                                response.set_cookie(key='access_token', value=access_token, httponly=True, secure=True)
+                                response.set_cookie(key='email', value=email, httponly=True, secure=True)
                                 # Return the calendar events as a JSON response
                                 return response
         # if token is not set in cookies
@@ -173,7 +175,7 @@ class GoogleCalendarRedirectView(APIView):
                         }) as calendar_response:
                             calendar_data = await calendar_response.json()
                             response = Response(calendar_data)
-                            response.set_cookie(key='access_token', value=access_token, httponly=True, secure=True)
+                            response.set_cookie(key='email', value=email, httponly=True, secure=True)
                             # Return the calendar events as a JSON response
                             return response
 
