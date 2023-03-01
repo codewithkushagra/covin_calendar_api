@@ -9,4 +9,4 @@ GOOGLE_CALENDAR_ENDPOINT = 'https://www.googleapis.com/calendar/v3/calendars/pri
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
-REDIRECT_URI = "https://api.kushagraagarwal.software/rest/v1/calendar/redirect/"
+REDIRECT_URI = "https://api.kushagraagarwal.software/rest/v1/calendar/redirect"
